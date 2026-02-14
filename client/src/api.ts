@@ -14,75 +14,31 @@ class ApiClient {
     });
   }
 
-  // currently, only fetches 1 session greater than current time
-  async getSession() {
+ async getMedicines() {
+  try {
+    const res = await this.client.get('/api/medicines');
+    return res.data; // returns array
+  } catch (error) {
+    this.handleError(error);
+  }
+}
+
+
+  async addMedicine(data: any) {
     try {
-      const response = await this.client.get('/api/session');
-      return response.data;
+      const res = await this.client.post('/api/medicines', data);
+      return res.data;
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  async createSession(name: string, duration: number, username: string, password: string) {
-    try {
-      if (!username || !password) {
-        toast.error('Credentials are required');
-        return;
-      }
-      const response = await this.client.post('/api/session', { name, duration, username, password });
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  async updateSession(session_id: number, active: boolean, username: string, password: string) {
-    try {
-      if (!username || !password) {
-        toast.error('Credentials are required');
-        return;
-      }
-
-      const response = await this.client.put('/api/session', { session_id, active, username, password });
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  async submitAttendance(roll: number) {
-    try {
-      const response = await this.client.post('/api/attendance', { roll });
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  async viewSessions(username: string, password: string) {
-    try {
-      if (!username || !password) {
-        toast.error('Credentials are required');
-        return;
-      }
-      const response = await this.client.post('/api/sessions', { username, password });
-      return response.data;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  // Handle common errors
   handleError(error: any) {
     if (error.response) {
-      // Server responded with a status other than 2xx
-      console.error(`API Error: ${error.response.status} - ${error.response.data.message}`);
+      console.error(`API Error: ${error.response.status}`, error.response.data);
     } else if (error.request) {
-      // Request was made, but no response was received
-      console.error('API Error: No response received', error.request);
+      console.error('API Error: No response received');
     } else {
-      // Something went wrong while setting up the request
       console.error('API Error:', error.message);
     }
 

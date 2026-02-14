@@ -1,108 +1,85 @@
 import { useEffect, useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
 import ApiClient from '../api';
-import toast from 'react-hot-toast';
-import { calculateAttendanceMarks, totalMarksPerDay } from '../helpers/util';
-
-const convertToHm = (seconds: number | undefined) => {
-  if (!seconds) return '0';
-  const hours = Math.floor(seconds / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-  return `${hours}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-};
-
-interface SessionInfo {
-  timeRemaining: number; // in seconds
-  name: string;
-  duration?: string;
-  created_at?: string;
-}
+import { Form, Card, Row, Col, Spinner } from 'react-bootstrap';
 
 const apiClient = new ApiClient();
 
+interface Medicine {
+  id: number;
+  name: string;
+  generic_name: string;
+  company: string;
+  category: string;
+}
+
 export default function Home() {
-  const [rollValue, setRollValue] = useState('');
-  const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // api call to get sessionInfo
-    // 1 session will be running at a time
-    const getSession = async () => {
-      const session = await apiClient.getSession();
-      console.log(session);
+useEffect(() => {
+  const fetchMedicines = async () => {
+    setLoading(true);
+    const res = await apiClient.getMedicines();
+    console.log('API Response:', res);
 
-      if (session.success) {
-        setSessionInfo({
-          ...session,
-          timeRemaining: session.timeRemaining * 60,
-          name: session.name,
-        });
-      }
-    };
-
-    getSession();
-  }, []);
-
-  // Decrement timeRemaining every second
-  useEffect(() => {
-    if (sessionInfo && sessionInfo.timeRemaining <= 0) return;
-
-    const timer = setInterval(() => {
-      setSessionInfo((p) => {
-        if (!p) return null;
-        return {
-          ...p,
-          timeRemaining: p.timeRemaining - 1,
-        };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [sessionInfo?.timeRemaining]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const res = await apiClient.submitAttendance(parseInt(rollValue));
-    console.log('res', res);
-
-    console.log('sessionInfo', sessionInfo);
-
-    if (res.success && sessionInfo) {
-      const attendanceMarks = calculateAttendanceMarks(res.attendance.created_at, sessionInfo.duration!, sessionInfo.created_at!);
-      toast.success(`Obtained marks: ${attendanceMarks} out of ${totalMarksPerDay}`, {
-        duration: 5000,
-      });
+    // since your API returns an array directly
+    if (Array.isArray(res)) {
+      setMedicines(res);
     } else {
-      toast.error(res.message);
+      console.error('Unexpected API response:', res);
     }
 
-    setRollValue('');
+    setLoading(false);
   };
 
+  fetchMedicines();
+}, []);
+
+
+
+
+  // live filtering
+  const filtered = medicines.filter(
+    (m) =>
+      m.name.toLowerCase().includes(search.toLowerCase()) ||
+      m.generic_name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="pt-4 d-flex justify-content-around items-center">
-      {!sessionInfo && <p className="text-3xl font-light fs-4">No active session found</p>}
-      {sessionInfo && (
-        <div className="w-lg-400">
-          <div className="text-center">
-            <h2 className="text-sm font-medium text-muted-foreground mb-2">Session</h2>
-            <p className="text-3xl font-light fs-4">{sessionInfo?.name}</p>
-          </div>
-          <div className="text-center">
-            <h2 className="text-sm font-medium text-muted-foreground mb-2">Remaining</h2>
-            <p className="text-3xl font-light fs-4">{convertToHm(sessionInfo?.timeRemaining)}</p>
-          </div>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Control type="number" placeholder="Enter roll" value={rollValue} onChange={(e) => setRollValue(e.target.value)} className="w-full text-center border-2" />
-            <div className="d-grid gap-2 mt-3">
-              <Button variant="primary" onClick={handleSubmit}>
-                Submit
-              </Button>
-            </div>
-          </Form.Group>
-        </div>
+    <div className="p-4">
+      <h2 className="text-center mb-4">Find Your Medicine</h2>
+
+      <Form.Control
+        placeholder="Search by medicine or generic name..."
+        className="mb-4"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {loading && <Spinner animation="border" className="d-block mx-auto" />}
+
+      <Row>
+        {filtered.map((m) => (
+          <Col md={4} key={m.id} className="mb-4">
+            <Card className="h-100 shadow-sm">
+              <Card.Body>
+                <Card.Title>{m.name}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">
+                  {m.generic_name}
+                </Card.Subtitle>
+                <Card.Text>
+                  <b>Company:</b> {m.company} <br />
+                  <b>Category:</b> {m.category}
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      {!loading && filtered.length === 0 && (
+        <p className="text-center text-muted">No medicines found</p>
       )}
     </div>
   );
