@@ -11,7 +11,7 @@ export default function BaseLayout({ children }: { children: React.ReactNode }) 
       </main>
 
       <footer className="bg-white border-top text-center py-3 small">
-        © 2026 CareMeds | AUST CSE | DB & SD Project
+        © 2026 CareMeds | AUST CSE
       </footer>
 
     </div>
