@@ -1,0 +1,10 @@
+UPDATE medicines SET price = 120 WHERE id = 1;
+UPDATE medicines SET price = 85 WHERE id = 2;
+UPDATE medicines SET price = 150 WHERE id = 3;
+UPDATE medicines SET price = 60 WHERE id = 4;
+UPDATE medicines SET price = 200 WHERE id = 5;
+UPDATE medicines SET price = 90 WHERE id = 6;
+UPDATE medicines SET price = 50 WHERE id = 7;
+UPDATE medicines SET price = 75 WHERE id = 8;
+UPDATE medicines SET price = 130 WHERE id = 9;
+UPDATE medicines SET price = 110 WHERE id = 10;
