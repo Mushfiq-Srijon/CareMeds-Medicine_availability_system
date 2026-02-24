@@ -65,24 +65,39 @@ class OrderController extends Controller
         $orderId = DB::getPdo()->lastInsertId();
 
         // Insert each ordered medicine into 'order_items' table
-        foreach ($request->items as $item) {
-            $medicine = DB::select(
-                "SELECT * FROM medicines WHERE id = ?",
-                [$item['medicine_id']]
-            );
-            $price = $medicine[0]->price;
+       foreach ($request->items as $item) {
 
-            DB::insert(
-                "INSERT INTO order_items (order_id, medicine_id, quantity, price)
-                 VALUES (?, ?, ?, ?)",
-                [
-                    $orderId,
-                    $item['medicine_id'],
-                    $item['quantity'],
-                    $price
-                ]
-            );
-        }
+    // Check available stock to prevent negative stock
+    $availableStock = DB::table('medicines')->where('id', $item['medicine_id'])->value('stock');
+    if ($item['quantity'] > $availableStock) {
+        return response()->json([
+            'success' => false,
+            'message' => "Not enough stock for medicine id " . $item['medicine_id']
+        ], 400);
+    }
+
+    //  Get medicine price
+    $medicine = DB::select("SELECT * FROM medicines WHERE id = ?", [$item['medicine_id']]);
+    $price = $medicine[0]->price;
+
+    // Insert into order_items
+    DB::insert(
+        "INSERT INTO order_items (order_id, medicine_id, quantity, price)
+         VALUES (?, ?, ?, ?)",
+        [
+            $orderId,
+            $item['medicine_id'],
+            $item['quantity'],
+            $price
+        ]
+    );
+
+    // Reduce stock
+    DB::statement(
+        "UPDATE medicines SET stock = stock - ? WHERE id = ?",
+        [$item['quantity'], $item['medicine_id']]
+    );
+}
 
         // Return success response
         return response()->json([

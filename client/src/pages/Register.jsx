@@ -34,7 +34,7 @@ function Register() {
         console.log("Success:", data);
         navigate("/login"); // Redirect to login
       } else {
-        alert("Registration Failed: " + (data.message || "Check inputs"));
+        alert("Registration Failed: " + (data.message || "Invalid input or already registered"));
       }
     } catch (error) {
       console.error("Server Error:", error);
