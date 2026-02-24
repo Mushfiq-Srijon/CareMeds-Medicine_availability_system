@@ -10,16 +10,22 @@ function Login() {
     try {
       const response = await fetch("http://localhost:8000/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        
+      if (response.ok && data.token) {
+        // Save token in localStorage
+        localStorage.setItem("auth_token", data.token);
+
+        // Optional: save user info
+        if (data.user) {
+          localStorage.setItem("user_name", data.user.name);
+          localStorage.setItem("user_id", data.user.id);
+        }
+
         navigate("/home");
       } else {
         alert("Login Failed: " + (data.message || "Check credentials"));
@@ -43,7 +49,7 @@ function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             style={styles.input}
-            placeholder=" " // Needed for floating label
+            placeholder=" "
           />
           <label
             style={{
