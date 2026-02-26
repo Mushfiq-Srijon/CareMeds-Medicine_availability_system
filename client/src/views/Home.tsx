@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ApiClient from '../api';
 import { Form, Card, Row, Col, Spinner } from 'react-bootstrap';
+import toast from 'react-hot-toast';
 
 const apiClient = new ApiClient();
 
@@ -10,6 +11,8 @@ interface Medicine {
   generic_name: string;
   company: string;
   category: string;
+  stock: number;
+  price: number;
 }
 
 export default function Home() {
@@ -17,29 +20,28 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
 
-useEffect(() => {
-  const fetchMedicines = async () => {
-    setLoading(true);
-    const res = await apiClient.getMedicines();
-    console.log('API Response:', res);
-
-    // since your API returns an array directly
-    if (Array.isArray(res)) {
-      setMedicines(res);
-    } else {
-      console.error('Unexpected API response:', res);
+  // Add to cart
+  const handleAddToCart = async (medicineId: number) => {
+    try {
+      await apiClient.addToCart(medicineId, 1); // quantity 1
+      toast.success('Added to cart!');
+    } catch (error) {
+      toast.error('Failed to add to cart');
     }
-
-    setLoading(false);
   };
 
-  fetchMedicines();
-}, []);
+  // Fetch medicines
+  useEffect(() => {
+    const fetchMedicines = async () => {
+      setLoading(true);
+      const res = await apiClient.getMedicines();
+      if (Array.isArray(res)) setMedicines(res);
+      else console.error('Unexpected API response:', res);
+      setLoading(false);
+    };
+    fetchMedicines();
+  }, []);
 
-
-
-
-  // live filtering
   const filtered = medicines.filter(
     (m) =>
       m.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -65,13 +67,20 @@ useEffect(() => {
             <Card className="h-100 shadow-sm">
               <Card.Body>
                 <Card.Title>{m.name}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">
-                  {m.generic_name}
-                </Card.Subtitle>
+                <Card.Subtitle className="mb-2 text-muted">{m.generic_name}</Card.Subtitle>
                 <Card.Text>
                   <b>Company:</b> {m.company} <br />
-                  <b>Category:</b> {m.category}
+                  <b>Category:</b> {m.category} <br />
+                  <b>Price:</b> {m.price} BDT <br />
+                  <b>Stock:</b> {m.stock}
                 </Card.Text>
+                <button
+                  className="btn btn-primary mt-2"
+                  disabled={m.stock === 0}
+                  onClick={() => handleAddToCart(m.id)}
+                >
+                  {m.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                </button>
               </Card.Body>
             </Card>
           </Col>

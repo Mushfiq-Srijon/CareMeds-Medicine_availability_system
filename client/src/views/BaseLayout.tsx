@@ -1,10 +1,12 @@
+import Navigation from '../components/Navigation';
+
 export default function BaseLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen d-flex flex-column bg-light">
       
-      <header className="bg-primary text-white p-3 shadow-sm">
-        <h3 className="text-center mb-0">CareMeds — Medicine Availability System</h3>
-      </header>
+      <Navigation />
+
+      
 
       <main className="container flex-grow-1 py-4">
         {children}
