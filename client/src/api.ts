@@ -13,6 +13,14 @@ class ApiClient {
       },
     });
   }
+  async delete(endpoint: string, config?: AxiosRequestConfig) {
+  try {
+    const res = await this.client.delete(endpoint, { ...config, ...this.getAuthConfig() });
+    return res.data;
+  } catch (error) {
+    this.handleError(error);
+  }
+}
 
   // Get auth headers with token
   private getAuthConfig() {
@@ -50,6 +58,19 @@ class ApiClient {
   async addToCart(medicineId: number, quantity: number = 1) {
     return this.post('/api/cart/add', { medicine_id: medicineId, quantity });
   }
+ 
+async getCart() {
+  return this.get("/api/cart/list");
+}
+// Update quantity
+async updateCart(cartId: number, quantity: number) {
+  return this.post("/cart/update", { cart_id: cartId, quantity });
+}
+
+// Remove item
+async removeCartItem(cartId: number) {
+  return this.delete(`/cart/remove/${cartId}`);
+}
 
   handleError(error: any) {
     if (error.response) {

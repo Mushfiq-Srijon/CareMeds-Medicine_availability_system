@@ -23,7 +23,7 @@ export default function Home() {
   // Add to cart
   const handleAddToCart = async (medicineId: number) => {
     try {
-      await apiClient.addToCart(medicineId, 1); // quantity 1 for now
+      await apiClient.addToCart(medicineId, 1); // quantity 1
       toast.success('Added to cart!');
     } catch (error) {
       toast.error('Failed to add to cart');

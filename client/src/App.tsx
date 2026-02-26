@@ -6,6 +6,10 @@ import Home from './views/Home';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Cart from './pages/Cart';
+import Profile from './pages/Profile';
+import About from './pages/About';
+import Help from './pages/Help';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
@@ -31,6 +35,12 @@ function App() {
           {/* Auth Pages */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          {/* Main Pages */}
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/help" element={<Help />} />
         </Route>
       </Routes>
 
