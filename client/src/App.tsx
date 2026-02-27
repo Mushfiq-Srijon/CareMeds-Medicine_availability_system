@@ -2,7 +2,6 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 import BaseLayout from './views/BaseLayout';
 import Home from './views/Home';
 
-// NEW IMPORTS
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
