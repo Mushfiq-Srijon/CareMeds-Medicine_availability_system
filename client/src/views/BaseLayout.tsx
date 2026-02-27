@@ -1,12 +1,15 @@
 import Navigation from '../components/Navigation';
+import { useLocation } from 'react-router-dom';
 
 export default function BaseLayout({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  // hide navigation on certain auth pages
+  const hideNavPaths = ['/login', '/register'];
+  const showNav = !hideNavPaths.includes(location.pathname);
+
   return (
     <div className="min-h-screen d-flex flex-column bg-light">
-      
-      <Navigation />
-
-      
+      {showNav && <Navigation />}
 
       <main className="container flex-grow-1 py-4">
         {children}
