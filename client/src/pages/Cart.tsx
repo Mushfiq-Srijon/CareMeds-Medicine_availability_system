@@ -3,6 +3,7 @@ import ApiClient from "../api";
 import { Table, Spinner, Button, InputGroup, FormControl } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import "../styles/Cart.css";
 
 
 
@@ -40,38 +41,38 @@ export default function Cart() {
   }, []);
 
   const updateQuantity = async (cartId: number, quantity: number) => {
-  if (quantity < 1) return;
-  setUpdatingId(cartId);
+    if (quantity < 1) return;
+    setUpdatingId(cartId);
 
-  try {
-    await apiClient.updateCart(cartId, quantity);
-    toast.success("Quantity updated");
-    fetchCart();   // <-- IMPORTANT
-  } catch {
-    toast.error("Failed to update quantity");
-  }
+    try {
+      await apiClient.updateCart(cartId, quantity);
+      toast.success("Quantity updated");
+      fetchCart();   // <-- IMPORTANT
+    } catch {
+      toast.error("Failed to update quantity");
+    }
 
-  setUpdatingId(null);
-};
+    setUpdatingId(null);
+  };
 
-const removeItem = async (cartId: number) => {
-  setUpdatingId(cartId);
+  const removeItem = async (cartId: number) => {
+    setUpdatingId(cartId);
 
-  try {
-    await apiClient.removeCartItem(cartId);
-    toast.success("Item removed");
-    fetchCart();   // <-- IMPORTANT
-  } catch {
-    toast.error("Failed to remove item");
-  }
+    try {
+      await apiClient.removeCartItem(cartId);
+      toast.success("Item removed");
+      fetchCart();   // <-- IMPORTANT
+    } catch {
+      toast.error("Failed to remove item");
+    }
 
-  setUpdatingId(null);
-};
+    setUpdatingId(null);
+  };
 
   const checkout = () => {
-  if (cartItems.length === 0) return toast.error("Cart is empty");
-  navigate("/checkout"); // Redirect to checkout page
-};
+    if (cartItems.length === 0) return toast.error("Cart is empty");
+    navigate("/checkout"); // Redirect to checkout page
+  };
 
   return (
     <>
@@ -85,7 +86,7 @@ const removeItem = async (cartId: number) => {
 
       {cartItems.length > 0 && (
         <>
-          <Table striped bordered hover>
+          <Table responsive striped bordered hover className="cart-table">
             <thead>
               <tr>
                 <th>Medicine</th>
@@ -99,10 +100,10 @@ const removeItem = async (cartId: number) => {
             <tbody>
               {cartItems.map(item => (
                 <tr key={item.cart_id}>
-                  <td>{item.name}</td>
-                  <td>{item.company}</td>
-                  <td>{item.price}</td>
-                  <td>
+                  <td data-label="Medicine">{item.name}</td>
+                  <td data-label="Company">{item.company}</td>
+                  <td data-label="Price">{item.price}</td>
+                  <td data-label="Quantity">
                     <InputGroup>
                       <Button
                         variant="outline-secondary"
@@ -125,8 +126,8 @@ const removeItem = async (cartId: number) => {
                       </Button>
                     </InputGroup>
                   </td>
-                  <td>{item.price * item.quantity}</td>
-                  <td>
+                  <td data-label="Total">{item.price * item.quantity}</td>
+                  <td data-label="Actions">
                     <Button
                       variant="danger"
                       size="sm"
@@ -141,7 +142,7 @@ const removeItem = async (cartId: number) => {
             </tbody>
           </Table>
 
-          <div className="text-end mt-3">
+          <div className="text-end mt-3 cart-checkout-wrapper">
             <Button variant="success" onClick={checkout}>
               Checkout
             </Button>

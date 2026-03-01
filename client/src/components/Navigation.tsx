@@ -31,13 +31,13 @@ export default function Navigation() {
 
         {/* Hamburger Menu for Mobile */}
         <button
-          className="navbar-toggler"
+          className="custom-navbar-toggler"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
-          <span className="navbar-toggler-icon"></span>
-          <span className="navbar-toggler-icon"></span>
+          <span className="custom-navbar-toggler-icon"></span>
+          <span className="custom-navbar-toggler-icon"></span>
+          <span className="custom-navbar-toggler-icon"></span>
         </button>
 
         {/* Navigation Links */}
