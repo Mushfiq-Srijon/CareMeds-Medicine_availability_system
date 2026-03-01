@@ -51,7 +51,7 @@ export default function Checkout() {
 
     try {
       // Backend expects pharmacy_id, delivery_type, items
-      await apiClient.post("/orders", {
+      await apiClient.post("/api/orders", {
         pharmacy_id: 1, // For simplicity, we can hardcode a pharmacy ID
         delivery_type: deliveryType,
         items: cartItems.map(item => ({

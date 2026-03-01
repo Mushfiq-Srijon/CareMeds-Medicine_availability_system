@@ -13,12 +13,13 @@ class ApiClient {
       },
     });
   }
-  async delete(endpoint: string, config?: AxiosRequestConfig) {
+async delete(endpoint: string, config?: AxiosRequestConfig) {
   try {
     const res = await this.client.delete(endpoint, { ...config, ...this.getAuthConfig() });
     return res.data;
-  } catch (error) {
+  } catch (error: any) {
     this.handleError(error);
+    throw error;
   }
 }
 
@@ -31,23 +32,25 @@ class ApiClient {
     };
   }
 
-  async get(endpoint: string, config?: AxiosRequestConfig) {
-    try {
-      const res = await this.client.get(endpoint, { ...config, ...this.getAuthConfig() });
-      return res.data;
-    } catch (error) {
-      this.handleError(error);
-    }
+async get(endpoint: string, config?: AxiosRequestConfig) {
+  try {
+    const res = await this.client.get(endpoint, { ...config, ...this.getAuthConfig() });
+    return res.data;
+  } catch (error: any) {
+    this.handleError(error);
+    throw error; // VERY IMPORTANT
   }
+}
 
-  async post(endpoint: string, data: any, config?: AxiosRequestConfig) {
-    try {
-      const res = await this.client.post(endpoint, data, { ...config, ...this.getAuthConfig() });
-      return res.data;
-    } catch (error) {
-      this.handleError(error);
-    }
+async post(endpoint: string, data: any, config?: AxiosRequestConfig) {
+  try {
+    const res = await this.client.post(endpoint, data, { ...config, ...this.getAuthConfig() });
+    return res.data;
+  } catch (error: any) {
+    this.handleError(error);
+    throw error; // VERY IMPORTANT
   }
+}
 
   // Medicines
   async getMedicines() {
@@ -80,7 +83,7 @@ async removeCartItem(cartId: number) {
 }
 // Clear entire cart
 async clearCart() {
-    return this.delete("/cart/clear");
+    return this.delete("/api/cart/clear");
 }
 
   handleError(error: any) {
