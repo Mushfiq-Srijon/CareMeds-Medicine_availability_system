@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import ApiClient from "../api";
 import { Table, Spinner, Button, InputGroup, FormControl } from "react-bootstrap";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 const apiClient = new ApiClient();
 
@@ -15,6 +19,7 @@ interface CartItem {
 }
 
 export default function Cart() {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
@@ -35,38 +40,38 @@ export default function Cart() {
   }, []);
 
   const updateQuantity = async (cartId: number, quantity: number) => {
-    if (quantity < 1) return;
-    setUpdatingId(cartId);
-    try {
-      await apiClient.updateCart(cartId, quantity);
-      toast.success("Quantity updated");
-      setCartItems(prev =>
-        prev.map(item =>
-          item.cart_id === cartId ? { ...item, quantity } : item
-        )
-      );
-    } catch {
-      toast.error("Failed to update quantity");
-    }
-    setUpdatingId(null);
-  };
+  if (quantity < 1) return;
+  setUpdatingId(cartId);
 
-  const removeItem = async (cartId: number) => {
-    setUpdatingId(cartId);
-    try {
-      await apiClient.removeCartItem(cartId);
-      toast.success("Item removed");
-      setCartItems(prev => prev.filter(item => item.cart_id !== cartId));
-    } catch {
-      toast.error("Failed to remove item");
-    }
-    setUpdatingId(null);
-  };
+  try {
+    await apiClient.updateCart(cartId, quantity);
+    toast.success("Quantity updated");
+    fetchCart();   // <-- IMPORTANT
+  } catch {
+    toast.error("Failed to update quantity");
+  }
+
+  setUpdatingId(null);
+};
+
+const removeItem = async (cartId: number) => {
+  setUpdatingId(cartId);
+
+  try {
+    await apiClient.removeCartItem(cartId);
+    toast.success("Item removed");
+    fetchCart();   // <-- IMPORTANT
+  } catch {
+    toast.error("Failed to remove item");
+  }
+
+  setUpdatingId(null);
+};
 
   const checkout = () => {
-    if (cartItems.length === 0) return toast.error("Cart is empty");
-    toast.success("Proceeding to checkout...");
-  };
+  if (cartItems.length === 0) return toast.error("Cart is empty");
+  navigate("/checkout"); // Redirect to checkout page
+};
 
   return (
     <>
