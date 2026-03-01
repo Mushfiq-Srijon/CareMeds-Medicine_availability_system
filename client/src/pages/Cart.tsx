@@ -35,33 +35,33 @@ export default function Cart() {
   }, []);
 
   const updateQuantity = async (cartId: number, quantity: number) => {
-    if (quantity < 1) return;
-    setUpdatingId(cartId);
-    try {
-      await apiClient.updateCart(cartId, quantity);
-      toast.success("Quantity updated");
-      setCartItems(prev =>
-        prev.map(item =>
-          item.cart_id === cartId ? { ...item, quantity } : item
-        )
-      );
-    } catch {
-      toast.error("Failed to update quantity");
-    }
-    setUpdatingId(null);
-  };
+  if (quantity < 1) return;
+  setUpdatingId(cartId);
 
-  const removeItem = async (cartId: number) => {
-    setUpdatingId(cartId);
-    try {
-      await apiClient.removeCartItem(cartId);
-      toast.success("Item removed");
-      setCartItems(prev => prev.filter(item => item.cart_id !== cartId));
-    } catch {
-      toast.error("Failed to remove item");
-    }
-    setUpdatingId(null);
-  };
+  try {
+    await apiClient.updateCart(cartId, quantity);
+    toast.success("Quantity updated");
+    fetchCart();   // <-- IMPORTANT
+  } catch {
+    toast.error("Failed to update quantity");
+  }
+
+  setUpdatingId(null);
+};
+
+const removeItem = async (cartId: number) => {
+  setUpdatingId(cartId);
+
+  try {
+    await apiClient.removeCartItem(cartId);
+    toast.success("Item removed");
+    fetchCart();   // <-- IMPORTANT
+  } catch {
+    toast.error("Failed to remove item");
+  }
+
+  setUpdatingId(null);
+};
 
   const checkout = () => {
     if (cartItems.length === 0) return toast.error("Cart is empty");

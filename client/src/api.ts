@@ -64,12 +64,19 @@ async getCart() {
 }
 // Update quantity
 async updateCart(cartId: number, quantity: number) {
-  return this.post("/cart/update", { cart_id: cartId, quantity });
+  return this.client.put(
+    "/api/cart/update",
+    { cart_id: cartId, quantity },
+    this.getAuthConfig()
+  );
 }
 
 // Remove item
 async removeCartItem(cartId: number) {
-  return this.delete(`/cart/remove/${cartId}`);
+  return this.client.delete(
+    `/api/cart/remove/${cartId}`,
+    this.getAuthConfig()
+  );
 }
 
   handleError(error: any) {
