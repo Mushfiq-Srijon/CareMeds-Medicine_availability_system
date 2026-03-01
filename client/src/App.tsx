@@ -9,6 +9,7 @@ import Cart from './pages/Cart';
 import Profile from './pages/Profile';
 import About from './pages/About';
 import Help from './pages/Help';
+import Checkout from './pages/Checkout';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
@@ -37,6 +38,7 @@ function App() {
 
           {/* Main Pages */}
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<About />} />
           <Route path="/help" element={<Help />} />

@@ -17,6 +17,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/medicines', [MedicineController::class, 'index']);
+Route::delete('/cart/clear', [CartController::class, 'clearCart']);
 
 
 // Protected Routes (Require Login Token)

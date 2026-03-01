@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import ApiClient from "../api";
 import { Table, Spinner, Button, InputGroup, FormControl } from "react-bootstrap";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 const apiClient = new ApiClient();
 
@@ -15,6 +19,7 @@ interface CartItem {
 }
 
 export default function Cart() {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
@@ -64,9 +69,9 @@ const removeItem = async (cartId: number) => {
 };
 
   const checkout = () => {
-    if (cartItems.length === 0) return toast.error("Cart is empty");
-    toast.success("Proceeding to checkout...");
-  };
+  if (cartItems.length === 0) return toast.error("Cart is empty");
+  navigate("/checkout"); // Redirect to checkout page
+};
 
   return (
     <>

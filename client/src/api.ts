@@ -78,6 +78,10 @@ async removeCartItem(cartId: number) {
     this.getAuthConfig()
   );
 }
+// Clear entire cart
+async clearCart() {
+    return this.delete("/cart/clear");
+}
 
   handleError(error: any) {
     if (error.response) {

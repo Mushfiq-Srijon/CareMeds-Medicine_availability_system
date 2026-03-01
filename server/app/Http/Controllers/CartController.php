@@ -64,6 +64,13 @@ class CartController extends Controller
 
         return response()->json(['message' => 'Item removed from cart']);
     }
+    // Clear entire cart for logged-in user
+public function clearCart()
+{
+    $user_id = auth()->id();
+    DB::delete("DELETE FROM carts WHERE user_id = ?", [$user_id]);
+    return response()->json(['message' => 'Cart cleared successfully']);
+}
 
     // Get all items in the logged-in user's cart
     public function getMyCart()
