@@ -85,6 +85,13 @@ async removeCartItem(cartId: number) {
 async clearCart() {
     return this.delete("/api/cart/clear");
 }
+async forgotPassword(email: string) {
+    return this.post('/api/forgot-password', { email });
+}
+
+async resetPassword(email: string, token: string, password: string) {
+    return this.post('/api/reset-password', { email, token, password });
+}
 
   handleError(error: any) {
     if (error.response) {

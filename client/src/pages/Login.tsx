@@ -98,6 +98,11 @@ function Login() {
             Sign Up
           </Link>
         </p>
+        <p style={styles.signupText}>
+          <Link to="/forgot-password" style={styles.signupLink}>
+            Forgot Password?
+          </Link>
+        </p>
       </div>
     </div>
   );

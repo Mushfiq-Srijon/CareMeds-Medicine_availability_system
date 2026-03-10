@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import Help from './pages/Help';
 import Checkout from './pages/Checkout';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
@@ -35,7 +37,8 @@ function App() {
           {/* Auth Pages */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           {/* Main Pages */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
