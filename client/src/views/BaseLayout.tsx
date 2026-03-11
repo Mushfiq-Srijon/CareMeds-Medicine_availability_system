@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 export default function BaseLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   // hide navigation on certain auth pages
-  const hideNavPaths = ['/login', '/register'];
+  const hideNavPaths = ['/login', '/register', '/forgot-password'];
   const showNav = !hideNavPaths.includes(location.pathname);
 
   return (
