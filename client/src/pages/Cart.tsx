@@ -43,11 +43,7 @@ export default function Cart() {
     try {
       await apiClient.updateCart(cartId, quantity);
       toast.success("Quantity updated");
-      setCartItems(prev =>
-        prev.map(item =>
-          item.cart_id === cartId ? { ...item, quantity } : item
-        )
-      );
+      fetchCart();
     } catch {
       toast.error("Failed to update quantity");
     }
@@ -59,7 +55,7 @@ export default function Cart() {
     try {
       await apiClient.removeCartItem(cartId);
       toast.success("Item removed");
-      setCartItems(prev => prev.filter(item => item.cart_id !== cartId));
+      fetchCart();
     } catch {
       toast.error("Failed to remove item");
     }
@@ -160,7 +156,7 @@ export default function Cart() {
               </div>
               <button className="checkout-btn" onClick={checkout}>
                 <svg fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                  <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
                 Proceed to Checkout
               </button>
